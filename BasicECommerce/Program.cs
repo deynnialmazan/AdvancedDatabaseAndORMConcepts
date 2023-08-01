@@ -51,12 +51,4 @@ app.MapPost("/products/create", (BasicECommerceContext context, string name) => 
 
 });
 
-
-//	A means of creating an association between a customer and an address
-//  The API should verify that the association doesn't already exist
-app.MapPost("/customers/add/product", (BasicECommerceContext context) =>
-{
-    return Results.Ok();
-});
-
 app.Run();
