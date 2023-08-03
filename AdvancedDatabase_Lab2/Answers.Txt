@@ -10,7 +10,7 @@ DEYNNI ALMAZAN
     interface represents the lifetime of a service, indicating how long an instance 
     of the service will be kept in memory.
 
-    IReportServiceLifetime interface defines the Id and Lifetime propertie, used 
+    IReportServiceLifetime interface defines the Id and Lifetime properties, used 
     to represent the lifetime of a service registered in a dependency injection 
     (DI) container.
 
@@ -62,7 +62,7 @@ DEYNNI ALMAZAN
 
      What service lifetime to use? 
      * Endpoint Method: Transient or Scoped
-       - With Scoped DbContextm a single instance of the DbContext is created and 
+       - With Scoped DbContext a single instance of the DbContext is created and 
          used throughout the entire HTTP request processing. After the request 
          is completed, the DbContext is disposed of.
 
