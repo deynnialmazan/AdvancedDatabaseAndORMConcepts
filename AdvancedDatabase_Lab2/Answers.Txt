@@ -1,0 +1,77 @@
+﻿
+ANSWERS - LAB 2 
+DEYNNI ALMAZAN
+
+1.  Why is it important that the IReportServiceLifetime class is an Interface?
+
+    In the context of a DI container, services are registered with the container,
+    and the container is responsible for managing the instantiation and lifetime 
+    of those services. The ServiceLifetime property in the IReportServiceLifetime
+    interface represents the lifetime of a service, indicating how long an instance 
+    of the service will be kept in memory.
+
+    IReportServiceLifetime interface defines the Id and Lifetime propertie, used 
+    to represent the lifetime of a service registered in a dependency injection 
+    (DI) container.
+
+
+2.  What are the three types of service lifetimes available for use here? 
+    What is the difference between them? 
+
+    The three types of service lifetimes are:
+    
+        a.Scoped service: 
+          Always create a new instance, every time we request for it.
+
+        b. Singleton service:
+           The Services with scoped lifetime are created only once per each 
+           request (scope), usually per HTTP request in web applications. 
+           I.e. It creates a new instance per request and reuses that instance 
+           within that request.
+
+        c. Transient service:
+           It creates a single instance of the service when the request for it 
+           comes for the first time. After that for every subsequent request, 
+           it will use the same instance. The new request does not create the
+           new instance of the service but reuses the existing instance.
+
+           In summary, the main differences between the three service lifetimes in DI 
+           containers are based on the duration and scope of the instances 
+           they manage:
+
+            -   Scoped: Lives within a specific scope (e.g., web request), 
+                shared within that scope, useful for maintaining state during
+                the scope's duration.
+            -   Transient: Short-lived, new instance for every request, 
+                stateless.
+            -   Singleton: Long-lived, shared across the entire application, 
+                created once, suitable for global or application-wide services.
+
+
+3.  Using the above information, what do we expect the lifetime is of an 
+    instance of a DbContext class injected into an Endpoint method? Into a 
+    seed method? 
+
+    We have to configure the lifetime of an instance of a DbContext or a seed
+    method. By configuring the DbContext lifetime appropriately, we can ensure 
+    that the database context is managed and disposed of correctly for different 
+    scenarios, such as endpoint methods and seed methods.
+
+     The lifetime depends on how we register the DbContext in the dependency
+     injection (DI) container and the configuration of its service lifetime. 
+
+     What service lifetime to use? 
+     * Endpoint Method: Transient or Scoped
+       - With Scoped DbContextm a single instance of the DbContext is created and 
+         used throughout the entire HTTP request processing. After the request 
+         is completed, the DbContext is disposed of.
+
+    * Seed method: Transient
+      -  Each call to the seeding method should have its own separate DbContext 
+         instance. Transient dbContext ensures that we start with a fresh 
+         database context each time the seeding method is called.
+
+       Source: 
+       https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/
+       https://www.tektutorialshub.com/asp-net-core/asp-net-core-dependency-injection-lifetime/
+

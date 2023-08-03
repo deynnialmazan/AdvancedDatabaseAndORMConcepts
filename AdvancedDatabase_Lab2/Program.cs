@@ -1,45 +1,36 @@
-// LAB 2 DEYNNI ALMAZAN
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using AdvancedDatabase_Lab2.ConsoleDI;
+HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 
-var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddTransient<IExampleTransientService, ExampleTransientService>();
+builder.Services.AddScoped<IExampleScopedService, ExampleScopedService>();
+builder.Services.AddSingleton<IExampleSingletonService, ExampleSingletonService>();
+builder.Services.AddTransient<ServiceLifetimeReporter>();
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+using IHost host = builder.Build();
 
-var app = builder.Build();
+ExemplifyServiceLifetime(host.Services, "Lifetime 1");
+ExemplifyServiceLifetime(host.Services, "Lifetime 2");
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+await host.RunAsync();
+
+static void ExemplifyServiceLifetime(IServiceProvider hostProvider, string lifetime)
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    using IServiceScope serviceScope = hostProvider.CreateScope();
+    IServiceProvider provider = serviceScope.ServiceProvider;
+    ServiceLifetimeReporter logger = provider.GetRequiredService<ServiceLifetimeReporter>();
+    logger.ReportServiceLifetimeDetails(
+        $"{lifetime}: Call 1 to provider.GetRequiredService<ServiceLifetimeReporter>()");
+
+    Console.WriteLine("...");
+
+    logger = provider.GetRequiredService<ServiceLifetimeReporter>();
+    logger.ReportServiceLifetimeDetails(
+        $"{lifetime}: Call 2 to provider.GetRequiredService<ServiceLifetimeReporter>()");
+
+    Console.WriteLine();
 }
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
-app.Run();
-
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// Each services.Add{LIFETIME}<{SERVICE}> extension method adds (and potentially
+// configures) services. 
