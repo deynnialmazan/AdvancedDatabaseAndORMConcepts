@@ -62,10 +62,8 @@ namespace FirstDbMVCApp.Controllers
         // POST: Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public IActionResult Create([Bind("Id, FullName, CourseId")] Student student, int CourseId)
         public IActionResult Create(CUStudentVM vm)
         {
-
             Student student = vm.NewStudent;
             student.CourseId = vm.SelectedCourseId;
 
@@ -81,25 +79,6 @@ namespace FirstDbMVCApp.Controllers
                 return View(student);
             }
         }
-
-            /*
-            if (ModelState.IsValid)
-            {
-                
-                student.Id = Guid.NewGuid();
-                _db.Add(student);
-                _db.SaveChanges();
-                student.Course = _db.Course.FirstOrDefault(c => c.Id == CourseId);
-                student.CourseId = CourseId;
-                _db.Update(student);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-                _db.Student.Add(student);
-                _db.SaveChanges();
-            }
-            return View(student);
-        }
-          */
 
             // GET: Students/Edit/5
             public IActionResult Edit(Guid? id)
