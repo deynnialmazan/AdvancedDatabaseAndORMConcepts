@@ -1,54 +1,35 @@
-using BasicECommerce.Data;
-using BasicECommerce.Models;
-using Microsoft.AspNetCore.Http.Json;
-using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
-
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using FirstDbMVCApp.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<FirstDbMVCAppContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FirstDbMVCAppContext") ?? throw new InvalidOperationException("Connection string 'FirstDbMVCAppContext' not found.")));
 
-builder.Services.AddDbContext<BasicECommerceContext>(options =>
+// Add services to the container.
+builder.Services.AddControllersWithViews(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ECommerceConnectionString"));
-});
-
-builder.Services.Configure<JsonOptions>(options => {
-    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 
 var app = builder.Build();
 
-//	Endpoint: A means of viewing all Customers, with their associated addresses
-app.MapGet("/customers/all/addresses", (BasicECommerceContext context) =>
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
 {
-    HashSet<CustomerAddress> cas = context.CustomerAddress.ToHashSet();
-    HashSet<Address> addresses = context.Address.ToHashSet(); 
-    return Results.Ok(context.Customer.ToHashSet()); 
-});
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
 
-//	A means of creating a new Product
-//	A customer must make an order to a specific address for a specific product.
-//	The API must verify that the customer is associated with the posted address
-app.MapPost("/products/create", (BasicECommerceContext context, string name) => {
-    try
-    {
-        if (context.Product.Any(p => p.Name.ToLower().Equals(name.ToLower())))
-        {
-            return Results.Conflict($"Product with name '{name}' already exists.");
-        }
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-        Product newProduct = new Product { Name = name };
+app.UseRouting();
 
-        context.Product.Add(newProduct);
-        context.SaveChanges();
+app.UseAuthorization();
 
-        Console.WriteLine(newProduct.Id);
-        return Results.Created($"/products/{newProduct.Id}", newProduct);
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest(ex.Message);
-    }
-
-});
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
