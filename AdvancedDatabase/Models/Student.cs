@@ -11,6 +11,8 @@ namespace FirstDbMVCApp.Models
         [Required]
         public string FullName { get; set; }
 
+        // [ForeignKey("Course")] -- in this way we can indicate that CourseId is
+        // the foreign key of Course object
         [DisplayName("Course Id")]
         public int CourseId { get; set; }
         public virtual Course Course { get; set; } = null;

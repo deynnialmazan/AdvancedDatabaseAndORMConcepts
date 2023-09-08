@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using FirstDbMVCApp.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<FirstDbMVCAppContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FirstDbMVCAppContext") ?? throw new InvalidOperationException("Connection string 'FirstDbMVCAppContext' not found.")));

@@ -20,7 +20,7 @@ namespace FirstDbMVCApp.Migrations
                 .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("FirstDbMVCApp.Models.Course", b =>
                 {
@@ -28,7 +28,7 @@ namespace FirstDbMVCApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -36,7 +36,7 @@ namespace FirstDbMVCApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Course");
+                    b.ToTable("Course", (string)null);
                 });
 
             modelBuilder.Entity("FirstDbMVCApp.Models.Student", b =>
@@ -56,7 +56,7 @@ namespace FirstDbMVCApp.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Student");
+                    b.ToTable("Student", (string)null);
                 });
 
             modelBuilder.Entity("FirstDbMVCApp.Models.Student", b =>

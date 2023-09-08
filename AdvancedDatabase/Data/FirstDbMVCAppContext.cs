@@ -9,6 +9,17 @@ namespace FirstDbMVCApp.Data
 {
     public class FirstDbMVCAppContext : DbContext
     {
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Student>()
+                .HasOne(s => s.Course)
+                .WithMany(c => c.EnrolledStudents)
+                .HasForeignKey(s => s.CourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Other model configurations
+        }
+
         public FirstDbMVCAppContext (DbContextOptions<FirstDbMVCAppContext> options)
             : base(options)
         {
