@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MusicMVCApp_PracticeProject.Models.Artist>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Home</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*DisplayNameFor returns the name of the property (column)*@
+                @Html.DisplayNameFor(model => model.Name) 
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (Artist a in Model) {
+        <tr>
+            <td>
+                    <h3>@a.Name</h3>
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@a.Id">Details</a> |
+                <a asp-action="Playlists" asp-route-id="@a.Id">Playlists</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
